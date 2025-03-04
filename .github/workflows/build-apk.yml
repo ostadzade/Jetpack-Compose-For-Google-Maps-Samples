@@ -40,12 +40,18 @@ jobs:
           java-version: 17
           distribution: 'zulu'
 
-      # 4. Build Debug APK
+      # 4. Install Gradle
+      - name: Install Gradle
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gradle
+
+      # 5. Build Debug APK
       - name: Build Debug APK
         working-directory: ${{ env.SAMPLE_PATH }}
-        run: ./gradlew assembleDebug --stacktrace
+        run: gradle assembleDebug --stacktrace
 
-      # 5. Upload APK as Artifact
+      # 6. Upload APK as Artifact
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
