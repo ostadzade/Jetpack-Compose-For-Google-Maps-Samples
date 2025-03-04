@@ -53,7 +53,7 @@ jobs:
       # 5. Build Debug APK
       - name: Build Debug APK
         working-directory: ${{ env.SAMPLE_PATH }}
-        run: ../gradlew assembleDebug --stacktrace
+        run: ../gradlew assembleDebug --stacktrace --info
 
       # 6. Upload APK as Artifact
       - name: Upload APK
