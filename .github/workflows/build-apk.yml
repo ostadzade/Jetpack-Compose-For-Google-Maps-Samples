@@ -1,0 +1,40 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main # یا هر شاخه‌ای که می‌خواهید
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. کلون کردن کد از GitHub
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. نصب JDK
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17' # یا نسخه‌ای که پروژه شما نیاز دارد
+          distribution: 'zulu'
+
+      # 3. نصب Android SDK
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+
+      # 4. ساخت APK
+      - name: Build APK
+        run: ./gradlew assembleDebug
+
+      # 5. آپلود APK به بخش Artifacts
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
