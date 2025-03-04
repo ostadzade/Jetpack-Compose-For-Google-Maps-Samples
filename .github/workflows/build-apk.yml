@@ -40,25 +40,12 @@ jobs:
           java-version: 17
           distribution: 'zulu'
 
-      # 4. Generate cache key
-      - name: Generate cache key
-        run: ./scripts/checksum.sh ${{ env.SAMPLE_PATH }} checksum.txt
-
-      # 5. Cache Gradle dependencies
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches/modules-*
-            ~/.gradle/caches/jars-*
-            ~/.gradle/caches/build-cache-*
-          key: gradle-${{ hashFiles('checksum.txt') }}
-
-      # 6. Build Debug APK
+      # 4. Build Debug APK
       - name: Build Debug APK
         working-directory: ${{ env.SAMPLE_PATH }}
         run: ./gradlew assembleDebug --stacktrace
 
-      # 7. Upload APK as Artifact
+      # 5. Upload APK as Artifact
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
