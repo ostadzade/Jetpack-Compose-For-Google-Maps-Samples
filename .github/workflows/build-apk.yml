@@ -6,15 +6,19 @@ on:
       - main
     paths:
       - '.github/workflows/build-apk.yml'
-      - 'app/**' # مسیر پروژه Android (تغییر دهید اگر مسیر متفاوت است)
+      - 'app/**' # مسیر پروژه Android
+      - 'build.gradle'
+      - 'settings.gradle'
   pull_request:
     paths:
       - '.github/workflows/build-apk.yml'
       - 'app/**'
+      - 'build.gradle'
+      - 'settings.gradle'
   workflow_dispatch:
 
 env:
-  SAMPLE_PATH: app # مسیر پروژه Android (تغییر دهید اگر مسیر متفاوت است)
+  SAMPLE_PATH: app # مسیر پروژه Android
   compose_store_password: ${{ secrets.COMPOSE_STORE_PASSWORD }}
   compose_key_alias: ${{ secrets.COMPOSE_KEY_ALIAS }}
   compose_key_password: ${{ secrets.COMPOSE_KEY_PASSWORD }}
@@ -40,16 +44,16 @@ jobs:
           java-version: 17
           distribution: 'zulu'
 
-      # 4. Install Gradle
-      - name: Install Gradle
+      # 4. Install Gradle Wrapper
+      - name: Install Gradle Wrapper
         run: |
-          sudo apt-get update
-          sudo apt-get install -y gradle
+          chmod +x gradlew
+          ./gradlew --version
 
       # 5. Build Debug APK
       - name: Build Debug APK
         working-directory: ${{ env.SAMPLE_PATH }}
-        run: gradle assembleDebug --stacktrace
+        run: ../gradlew assembleDebug --stacktrace
 
       # 6. Upload APK as Artifact
       - name: Upload APK
