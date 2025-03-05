@@ -60,10 +60,10 @@ jobs:
           chmod +x gradlew
           ./gradlew --version
 
-      # 6. Build Debug APK
+      # 6. Build Debug APK با --scan
       - name: Build Debug APK
         working-directory: ${{ env.SAMPLE_PATH }}
-        run: ../gradlew assembleDebug --stacktrace
+        run: ../gradlew assembleDebug --scan
 
       # 7. Upload APK as Artifact
       - name: Upload APK
