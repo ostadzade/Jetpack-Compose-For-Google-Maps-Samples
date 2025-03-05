@@ -26,22 +26,29 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     steps:
       # 1. Checkout کد
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. ایجاد فایل local.properties
+      # 2. فعال‌سازی Gradle Build Cache
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/build.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # 3. ایجاد فایل local.properties
       - name: Create local.properties
         run: |
           echo "sdk.dir=/usr/lib/android-sdk" > local.properties
-        working-directory: ${{ github.workspace }} # پوشه اصلی پروژه
-
-      # 3. Copy CI gradle.properties
-      - name: Copy CI gradle.properties
-        run: mkdir -p ~/.gradle ; cp .github/ci-gradle.properties ~/.gradle/gradle.properties
+        working-directory: ${{ github.workspace }}
 
       # 4. Setup JDK 17
       - name: Set up JDK 17
@@ -56,10 +63,10 @@ jobs:
           chmod +x gradlew
           ./gradlew --version
 
-      # 6. Build Debug APK
+      # 6. Build Debug APK با refresh dependencies
       - name: Build Debug APK
         working-directory: ${{ env.SAMPLE_PATH }}
-        run: ../gradlew assembleDebug --stacktrace --info
+        run: ../gradlew assembleDebug --stacktrace --info --refresh-dependencies
 
       # 7. Upload APK as Artifact
       - name: Upload APK
